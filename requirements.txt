@@ -42,6 +42,7 @@ gradio==3.43.2
 gdown
 wget
 seaborn
+fnet-pytorch
 # mamba_ssm
 # flash_attn
 # piper_phonemize
