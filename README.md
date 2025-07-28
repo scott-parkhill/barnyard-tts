@@ -14,6 +14,13 @@ Alternatively, you can build the environment with [`Dockerfile`](Dockerfile). Af
 python "matcha/utils/monotonic_align/setup.py" build_ext --inplace
 ```
 
+
+Run this from the main directory.
+```shell
+python3 setup.py build_ext --inplace
+```
+
+
 ### Inference
 #### Data Preparation
 Path to your test samples, as well as their speaker/language id and input text should be formatted in each row as follows in a `.txt` file. For our case, AT is 0, MJ is 1, JJ is 2 and NJ is 3. For languages, Maliseet is 0, Mikmaw is 1 and Ojibwe is 2:
