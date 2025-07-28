@@ -13,7 +13,7 @@ from diffusers.models.attention_processor import Attention
 from diffusers.models.lora import LoRACompatibleLinear
 from diffusers.utils.torch_utils import maybe_allow_in_graph
 
-from mamba_ssm import Mamba2
+# from mamba_ssm import Mamba2
 from hydra_mm.hydra import Hydra
 
 class SnakeBeta(nn.Module):

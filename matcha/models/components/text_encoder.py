@@ -6,8 +6,8 @@ import os
 import torch
 import torch.nn as nn
 from einops import rearrange
-from flash_attn import flash_attn_func
-from mamba_ssm import Mamba2
+# from flash_attn import flash_attn_func
+# from mamba_ssm import Mamba2
 from hydra_mm.hydra import Hydra
 from fnet import FourierFFTLayer
 
