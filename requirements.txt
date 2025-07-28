@@ -43,5 +43,5 @@ gdown
 wget
 seaborn
 # mamba_ssm
-flash_attn
+# flash_attn
 # piper_phonemize
