@@ -44,6 +44,7 @@ gdown
 wget
 seaborn
 fnet-pytorch
+encodec
 # mamba_ssm
 # flash_attn
 # piper_phonemize
