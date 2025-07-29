@@ -48,3 +48,8 @@ encodec
 # mamba_ssm
 # flash_attn
 # piper_phonemize
+
+# API
+fastapi
+uvicorn
+gunicorn
