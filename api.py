@@ -63,7 +63,7 @@ def synthesize_api(
     # Dialect Code
     d: str = Query(...),
     # Speaker Code
-    s: int = Query(...)
+    s: str = Query(...)
 ):
     ids = process_codes(l, d, s)
 
