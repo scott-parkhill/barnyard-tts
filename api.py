@@ -11,11 +11,13 @@ def status():
 @app.get("/synthesize")
 def synthesize_api(
     text: str = Query(...),
+    model_id: int = Query(...),
     language_id: int = Query(...),
     speaker_id: int = Query(...)
 ):
     try:
         buffer = synthesize(text,
+                            model_id,
                             language_id=language_id,
                             speaker_id=speaker_id)
         

@@ -127,12 +127,20 @@ def check_cuda_availability():
 
 
 
-tts_model="../models/multilingual_fnet_last.ckpt"
+tts_model_ro="../models/multilingual_fnet_last.ckpt"
+tts_model_syllabics="../models/"
+
 vocoder="../models/vocos_last.ckpt"
 vocos_config="../models/vocos-matcha.yaml"
+
 device = torch.device("cpu")
-model = MatchaTTS.load_from_checkpoint(tts_model, map_location=device)
-model.eval()
+
+model_ro = MatchaTTS.load_from_checkpoint(tts_model_ro, map_location=device)
+model_ro.eval()
+
+model_syllabics = MatchaTTS.load_from_checkpoint(tts_model_syllabics, map_location=device)
+model_syllabics.eval()
+
 vocoder = utils.load_vocoder(
                 vocos_config,
                 vocoder,
@@ -143,9 +151,14 @@ vocoder.eval()
 
 # Temporary copy paste from main() just to get the API running.
 def synthesize(text: str,
+               model_id: int,
                language_id: int,
                speaker_id: int) -> io.BytesIO:
 
+    if model_id == 1:
+        model = model_ro
+    if model_id == 2:
+        model = model_syllabics
 
     # Process single text
     print(f"Processing text: '{text}'")
