@@ -1,0 +1,17 @@
+[Unit]
+Description=TTS FastAPI Service
+After=network.target
+
+[Service]
+User=cockatoo
+Group=tts
+WorkingDirectory=/home/cockatoo/barnyard-tts/
+ExecStart=/home/cockatoo/barnyard-tts/venv/bin/gunicorn app:app \
+  --workers 4 \
+  --worker-class uvicorn.workers.UvicornWorker \
+  --bind 0.0.0.0:8000 \
+  --timeout 60
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
