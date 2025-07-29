@@ -16,11 +16,8 @@ def synthesize_api(
 ):
     try:
         buffer = synthesize(text,
-                                 tts_model="../models/multilingual_fnet_last.ckpt",
-                                 vocoder="../models/vocos_last.ckpt",
-                                 vocos_config="../models/vocos-matcha.yaml",
-                                 language_id=language_id,
-                                 speaker_id=speaker_id)
+                            language_id=language_id,
+                            speaker_id=speaker_id)
         
         return StreamingResponse(buffer, media_type="audio/wav")
     except Exception as e:

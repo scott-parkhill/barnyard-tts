@@ -121,109 +121,100 @@ def check_cuda_availability():
 
     return cuda_available
 
-# Temporary copy paste from main() just to get the API running.
-def synthesize(text: str,
-               tts_model: str,
-               vocoder: str,
-               vocos_config: str,
-               language_id: int,
-               speaker_id: int) -> io.BytesIO:
-    
-    # Check CUDA availability
-    cuda_available = check_cuda_availability()
-    device = torch.device("cpu") if not cuda_available else torch.device("cuda")
 
-    try:
-        # Load TTS model
-        print(f"Loading TTS model: {tts_model}")
-        model = MatchaTTS.load_from_checkpoint(tts_model, map_location=device)
-        model.eval()
-        print("Model loaded successfully!")
 
-        # Load vocoder
-        print(f"Loading vocoder: {vocoder}")
-        if vocos_config:
-            from synthesis import utils
 
-            # Use the project's existing utility function to load the vocoder
-            vocoder = utils.load_vocoder(
+
+
+
+tts_model="../models/multilingual_fnet_last.ckpt"
+vocoder="../models/vocos_last.ckpt"
+vocos_config="../models/vocos-matcha.yaml"
+device = torch.device("cpu")
+model = MatchaTTS.load_from_checkpoint(tts_model, map_location=device)
+model.eval()
+vocoder = utils.load_vocoder(
                 vocos_config,
                 vocoder,
                 device,
                 data_type=None  # Remove the data_type parameter or use torch.float32
             )
-        else:
-            vocoder = torch.load(vocoder, map_location=device)
-        vocoder.eval()
-        print("Vocoder loaded successfully!")
+vocoder.eval()
 
-        # Process single text
-        print(f"Processing text: '{text}'")
-        processed_text = inference.process_text(text, device)
+# Temporary copy paste from main() just to get the API running.
+def synthesize(text: str,
+               language_id: int,
+               speaker_id: int) -> io.BytesIO:
 
-        # Set up speaker and language tensors if needed
-        speaker_tensor = None
-        language_tensor = None
 
-        # Check if model is multi-speaker
-        if hasattr(model, 'spk_emb'):
-            speaker_tensor = torch.tensor([speaker_id], device=device)
-            print(f"Using speaker ID: {speaker_id}")
+    # Process single text
+    print(f"Processing text: '{text}'")
+    processed_text = inference.process_text(text, device)
 
-        # Check if model is multilingual
-        if hasattr(model, 'lang_emb'):
-            language_tensor = torch.tensor([language_id], device=device)
-            print(f"Using language ID: {language_id}")
+    # Set up speaker and language tensors if needed
+    speaker_tensor = None
+    language_tensor = None
 
-        # Synthesize speech
-        print("Synthesizing speech...")
-        temperature = 0.667
-        length_scale = 1.0
-        output = inference.synthesise(
-            processed_text,
-            model,
-            temperature=temperature,
-            length_scale=length_scale,
-            spks=speaker_tensor,
-            lang=language_tensor
-        )
+    # Check if model is multi-speaker
+    if hasattr(model, 'spk_emb'):
+        speaker_tensor = torch.tensor([speaker_id], device=device)
+        print(f"Using speaker ID: {speaker_id}")
 
-        # Convert to waveform
-        print("Converting to waveform...")
-        waveform = inference.to_waveform(output['mel'], None, vocoder)
+    # Check if model is multilingual
+    if hasattr(model, 'lang_emb'):
+        language_tensor = torch.tensor([language_id], device=device)
+        print(f"Using language ID: {language_id}")
 
-        audio_data = waveform.squeeze().numpy()
-        # Normalize if needed
-        if audio_data.max() > 1.0 or audio_data.min() < -1.0:
-            audio_data = audio_data / max(abs(audio_data.max()), abs(audio_data.min()))
-        # Convert to int16
-        audio_data = (audio_data * 32767).astype('int16')
+    # Synthesize speech
+    print("Synthesizing speech...")
+    temperature = 0.667
+    length_scale = 1.0
+    output = inference.synthesise(
+        processed_text,
+        model,
+        temperature=temperature,
+        length_scale=length_scale,
+        spks=speaker_tensor,
+        lang=language_tensor
+    )
 
-        # Write to buffer.
-        buffer = io.BytesIO()
-        scipy.io.wavfile.write(buffer, 22050, audio_data)
-        buffer.seek(0)
+    # Convert to waveform
+    print("Converting to waveform...")
+    waveform = inference.to_waveform(output['mel'], None, vocoder)
 
-        # Print synthesis stats if you have these utility functions
-        # If you don't have these functions, comment out or remove these lines
-        try:
-            rtf = utils.compute_rtf(output)
-            inference_time = utils.compute_time_spent(output)
-            print(f"Synthesis time: {inference_time:.2f} seconds")
-            print(f"Real-time factor: {rtf:.2f}x")
-        except (AttributeError, KeyError):
-            # Skip if these utility functions aren't available
-            pass
+    audio_data = waveform.squeeze().numpy()
+    # Normalize if needed
+    if audio_data.max() > 1.0 or audio_data.min() < -1.0:
+        audio_data = audio_data / max(abs(audio_data.max()), abs(audio_data.min()))
+    # Convert to int16
+    audio_data = (audio_data * 32767).astype('int16')
 
-        print("Successfully returning waveform as bytes.")
-        return buffer
+    # Write to buffer.
+    buffer = io.BytesIO()
+    scipy.io.wavfile.write(buffer, 22050, audio_data)
+    buffer.seek(0)
 
-    except Exception as e:
-        print(f"Error during synthesis: {str(e)}")
-        import traceback
-        traceback.print_exc()
-        # In this case, zero is an error.
-        return 0
+    # Print synthesis stats if you have these utility functions
+    # If you don't have these functions, comment out or remove these lines
+    try:
+        rtf = utils.compute_rtf(output)
+        inference_time = utils.compute_time_spent(output)
+        print(f"Synthesis time: {inference_time:.2f} seconds")
+        print(f"Real-time factor: {rtf:.2f}x")
+    except (AttributeError, KeyError):
+        # Skip if these utility functions aren't available
+        pass
+
+    print("Successfully returning waveform as bytes.")
+    return buffer
+
+
+
+
+
+
+
+
 
 def main():
     
