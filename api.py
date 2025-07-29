@@ -1,8 +1,12 @@
 from fastapi import FastAPI, HTTPException, Query
-from fastapi.responses import StreamingResponse
+from fastapi.responses import StreamingResponse, PlainTextResponse
 from tts_cli import synthesize
 
 app = FastAPI()
+
+@app.get("status", response_class=PlainTextResponse)
+def status():
+    return "Up and running."
 
 @app.get("/synthesize")
 def synthesize_api(
@@ -13,8 +17,8 @@ def synthesize_api(
     try:
         buffer = synthesize(text,
                                  tts_model="../models/multilingual_fnet_last.ckpt",
-                                 vocoder="vocos_last.ckpt",
-                                 vocos_config="vocos-matcha.yaml",
+                                 vocoder="../models/vocos_last.ckpt",
+                                 vocos_config="../models/vocos-matcha.yaml",
                                  language_id=language_id,
                                  speaker_id=speaker_id)
         
