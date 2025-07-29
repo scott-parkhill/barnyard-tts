@@ -4,7 +4,7 @@ from tts_cli import synthesize
 
 app = FastAPI()
 
-@app.get("status", response_class=PlainTextResponse)
+@app.get("/status", response_class=PlainTextResponse)
 def status():
     return "Up and running."
 
