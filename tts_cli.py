@@ -128,7 +128,7 @@ def check_cuda_availability():
 
 
 tts_model_ro="../models/multilingual_fnet_last.ckpt"
-tts_model_syllabics="../models/"
+tts_model_syllabics="../models/syllabics.ckpt"
 
 vocoder="../models/vocos_last.ckpt"
 vocos_config="../models/vocos-matcha.yaml"
