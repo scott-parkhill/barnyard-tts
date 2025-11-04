@@ -1,5 +1,8 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
+
+# TODO This is apparently a fortran to python converter script through Numpy.
+
 import re
 import sys
 from numpy.f2py.f2py2e import main
