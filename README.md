@@ -1,3 +1,26 @@
+# Scott's README Rewrite
+
+Todos, in no particular order:
+
+- rewrite .gitignore
+- move requirements.txt into poetry or uv, etc
+- replace pylint.rc file with one from fst-runtime repo
+- figure out what in the actual living **** is using the .project-root file and kill that with all the fire
+- remove the embedded matcha-tts repo
+- figure out if hydra_mm is an embedded repo
+- figure out why `.local/bin/f2py` is there and if it can be deleted (the answer is probably)
+- figure out why the github action script `.pre-commit-config.yaml` isn't in .github
+- probably kill the scripts folder with schedule.sh
+- figure out what is using MANIFEST.in
+- rewrite setup.py for our own implementation
+- for now, embed Chad's cli script in the repo just so we have something working
+- write down installation instruction notes here from the VM
+- figure out what to do with all the data files embedded in the repo, and separate them out
+
+
+
+
+
 # Developing Multilingual Speech Synthesis System for Ojibwe, Mi'kmaq, and Maliseet
 ### Shenran Wang, Changbing Yang, Mike Parkhill, Chad Quinn, Christopher Hammerly, Jian Zhu
 ## Getting Started
