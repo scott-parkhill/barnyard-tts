@@ -144,7 +144,7 @@ def synthesis():
                 language_index=lang,
                 temperature=temperature,
                 length_scale=length_scale,
-                n_timesteps=n_timesteps
+                number_of_timesteps=n_timesteps
             )
             waveform = inference.to_waveform(output['mel'], denoiser, vocoder)
             output['waveform'] = normalize_audio(waveform, sample_rate=SAMPLE_RATE).t().squeeze()
@@ -163,7 +163,7 @@ def synthesis():
                 language_index=lang,
                 temperature=temperature,
                 length_scale=length_scale,
-                n_timesteps=n_timesteps
+                number_of_timesteps=n_timesteps
             )
             waveform = inference.to_waveform(output['mel'], denoiser, vocoder)
             try:

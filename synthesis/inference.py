@@ -21,11 +21,12 @@ def process_text(text: str, device: torch.DeviceObjType):
         'x_phones': x_phones
     }
 
+# TODO If we aren't supposed to change the number of timesteps, why is it a function parameter?
 @torch.inference_mode()
 def synthesise(
     text: dict,
     model, 
-    n_timesteps: int = 10, 
+    number_of_timesteps: int = 10, 
     temperature: float = 0.667, 
     length_scale: float = 1.0, 
     speaker_index: torch.Tensor = None, 
@@ -44,18 +45,18 @@ def synthesise(
     Returns:
         (dict): outputs from MatchaTTS. This is only mel-spectrogram and inference efficiency metrics and does not include the waveform.
     """
-    start_t = dt.datetime.now()
+    start_time = dt.datetime.now()
     output = model.synthesise(
         text['x'], 
         text['x_lengths'],
-        n_timesteps=n_timesteps,
+        n_timesteps=number_of_timesteps,
         temperature=temperature,
         spks=speaker_index,
         lang=language_index,
         length_scale=length_scale
     )
     # merge everything to one dict    
-    output.update({'start_t': start_t, **text})
+    output.update({'start_t': start_time, **text})
     return output
 
 @torch.inference_mode()
@@ -121,7 +122,7 @@ def batch_synthesis(
             language_index=batch_lang,
             temperature=temperature,
             length_scale=length_scale,
-            n_timesteps=n_timesteps
+            number_of_timesteps=n_timesteps
         )
 
         batch_output['waveform'] = to_waveform(batch_output['mel'], denoiser, vocoder)
