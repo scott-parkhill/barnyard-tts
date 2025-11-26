@@ -13,7 +13,8 @@ from vocos import Vocos
 from matcha.models.matcha_tts import MatchaTTS
 
 
-def pad(input: torch.Tensor, target_len: int):
+# TODO Pad what?
+def pad(input: torch.Tensor, target_len: int) -> torch.Tensor:
     padding_needed = target_len - input.size(-1)
     if padding_needed <= 0:
         return input
