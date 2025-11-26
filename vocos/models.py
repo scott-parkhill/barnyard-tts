@@ -29,51 +29,57 @@ class VocosBackbone(Backbone):
 
     Args:
         input_channels (int): Number of input features channels.
-        dim (int): Hidden dimension of the model.
-        intermediate_dim (int): Intermediate dimension used in ConvNeXtBlock.
-        num_layers (int): Number of ConvNeXtBlock layers.
+        hidden_dimension (int): Hidden dimension of the model.
+        intermediate_dimension (int): Intermediate dimension used in ConvNeXtBlock.
+        number_of_layers (int): Number of ConvNeXtBlock layers.
         layer_scale_init_value (float, optional): Initial value for layer scaling. Defaults to `1 / num_layers`.
-        adanorm_num_embeddings (int, optional): Number of embeddings for AdaLayerNorm.
+        adanorm_embeddings (int, optional): Number of embeddings for AdaLayerNorm.
                                                 None means non-conditional model. Defaults to None.
     """
 
     def __init__(
         self,
         input_channels: int,
-        dim: int,
-        intermediate_dim: int,
-        num_layers: int,
+        hidden_dimension: int,
+        intermediate_dimension: int,
+        number_of_layers: int,
         layer_scale_init_value: Optional[float] = None,
-        adanorm_num_embeddings: Optional[int] = None,
+        adanorm_embeddings: Optional[int] = None,
     ):
+        # TODO Magic numbers.
         super().__init__()
         self.input_channels = input_channels
-        self.embed = nn.Conv1d(input_channels, dim, kernel_size=7, padding=3)
-        self.adanorm = adanorm_num_embeddings is not None
-        if adanorm_num_embeddings:
-            self.norm = AdaLayerNorm(adanorm_num_embeddings, dim, eps=1e-6)
+        self.embed = nn.Conv1d(input_channels, hidden_dimension, kernel_size=7, padding=3)
+        self.adanorm = adanorm_embeddings is not None
+        if adanorm_embeddings:
+            self.norm = AdaLayerNorm(adanorm_embeddings, hidden_dimension, eps=1e-6)
         else:
-            self.norm = nn.LayerNorm(dim, eps=1e-6)
-        layer_scale_init_value = layer_scale_init_value or 1 / num_layers
+            self.norm = nn.LayerNorm(hidden_dimension, eps=1e-6)
+        layer_scale_init_value = layer_scale_init_value or 1 / number_of_layers
+
+        # TODO Make this a normal for block setting a list. This is crazy initialization.
         self.convnext = nn.ModuleList(
             [
                 ConvNeXtBlock(
-                    dim=dim,
-                    intermediate_dim=intermediate_dim,
+                    dim=hidden_dimension,
+                    intermediate_dim=intermediate_dimension,
                     layer_scale_init_value=layer_scale_init_value,
-                    adanorm_num_embeddings=adanorm_num_embeddings,
+                    adanorm_num_embeddings=adanorm_embeddings,
                 )
-                for _ in range(num_layers)
+                for _ in range(number_of_layers)
             ]
         )
-        self.final_layer_norm = nn.LayerNorm(dim, eps=1e-6)
+        self.final_layer_norm = nn.LayerNorm(hidden_dimension, eps=1e-6)
         self.apply(self._init_weights)
 
+    # TODO What is "m"?
     def _init_weights(self, m):
         if isinstance(m, (nn.Conv1d, nn.Linear)):
             nn.init.trunc_normal_(m.weight, std=0.02)
             nn.init.constant_(m.bias, 0)
 
+    # TODO What is "x"?
+    # TODO Why kwargs when there is only a single access to bandwidth_id and nothing else?
     def forward(self, x: torch.Tensor, **kwargs) -> torch.Tensor:
         bandwidth_id = kwargs.get('bandwidth_id', None)
         x = self.embed(x)
@@ -95,22 +101,25 @@ class VocosResNetBackbone(Backbone):
 
     Args:
         input_channels (int): Number of input features channels.
-        dim (int): Hidden dimension of the model.
-        num_blocks (int): Number of ResBlock1 blocks.
+        hidden_dimension (int): Hidden dimension of the model.
+        blocks (int): Number of ResBlock1 blocks.
         layer_scale_init_value (float, optional): Initial value for layer scaling. Defaults to None.
     """
 
     def __init__(
-        self, input_channels, dim, num_blocks, layer_scale_init_value=None,
+        self, input_channels, hidden_dimension, blocks, layer_scale_init_value=None,
     ):
         super().__init__()
         self.input_channels = input_channels
-        self.embed = weight_norm(nn.Conv1d(input_channels, dim, kernel_size=3, padding=1))
-        layer_scale_init_value = layer_scale_init_value or 1 / num_blocks / 3
+        self.embed = weight_norm(nn.Conv1d(input_channels, hidden_dimension, kernel_size=3, padding=1))
+        layer_scale_init_value = layer_scale_init_value or 1 / blocks / 3
+
+        # TODO Remove this cursed initialization.
         self.resnet = nn.Sequential(
-            *[ResBlock1(dim=dim, layer_scale_init_value=layer_scale_init_value) for _ in range(num_blocks)]
+            *[ResBlock1(dim=hidden_dimension, layer_scale_init_value=layer_scale_init_value) for _ in range(blocks)]
         )
 
+    # TODO What is x? Why is kwargs here when it is unused?
     def forward(self, x: torch.Tensor, **kwargs) -> torch.Tensor:
         x = self.embed(x)
         x = self.resnet(x)
