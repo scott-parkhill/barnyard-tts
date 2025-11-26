@@ -37,11 +37,11 @@ def synthesise(
     Args:
         - text (dict): dictionary of inputs, contains tokenized text in text['x'] and tokenized length in text['x_lengths'].
         - model (nn.Module): model object.
-        - n_timesteps (int, optional): number of flow matching timesteps. Do not change this value. Defaults to 10.
+        - number_of_timesteps (int, optional): number of flow matching timesteps. Do not change this value. Defaults to 10.
         - temperature (float, optional): temperature for generation, controls randomness in the flow matching process. Defaults to 0.667.
         - length_scale (float, optional): length scale for generated audio. Defaults to 1.0.
-        - spks (torch.Tensor, optional): speaker index, must be torch.long type. This should be changed accordingly if you are using a multispeaker model. Defaults to None for mono-speaker models.
-        - lang (torch.Tensor, optional): language index, must be torch.long type. This should be changed accordingly if you are using a multilingual model. Defaults to None for mono-lingual models.
+        - speaker_index (torch.Tensor, optional): speaker index, must be torch.long type. This should be changed accordingly if you are using a multispeaker model. Defaults to None for mono-speaker models.
+        - language_index (torch.Tensor, optional): language index, must be torch.long type. This should be changed accordingly if you are using a multilingual model. Defaults to None for mono-lingual models.
     Returns:
         (dict): outputs from MatchaTTS. This is only mel-spectrogram and inference efficiency metrics and does not include the waveform.
     """
