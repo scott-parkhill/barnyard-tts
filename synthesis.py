@@ -1,5 +1,7 @@
 import numpy as np
 import torch
+
+# tqdm is a progress bar module.
 from tqdm.auto import tqdm
 
 # Evaluation imports
@@ -16,6 +18,7 @@ import argparse, os
 args = argparse.ArgumentParser()
 args.add_argument("--batch_size", type=int, default=1)
 args.add_argument("--data_type", type=str, default="fp32", choices=["fp16", "bf16", "fp32"])
+# TODO y in a machine learning context is apparently "labels", so it's a file list of labels?
 args.add_argument("--y_filelist", type=str, required=True, help="Path to filelist of test files")
 args.add_argument("--tts_ckpt", type=str, required=True, help="Path to MatchaTTS checkpoint")
 args.add_argument("--multilingual", default=False, action="store_true", help="Whether current run is multilingual")
@@ -111,6 +114,7 @@ def synthesis():
             throughput = output['throughput']
             for j, wave in enumerate(output['waveform']):
                 try:
+                    # TODO .t() is apparently a transpose method in numpy. Trash naming holy moly.
                     normalized = normalize_audio(wave, sample_rate=SAMPLE_RATE).t()
                 except Exception as err:
                     print(f"{output['names'][j]}: {err}")
