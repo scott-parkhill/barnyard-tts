@@ -6,6 +6,7 @@ import torchaudio
 from pytorch_lightning import LightningDataModule
 from torch.utils.data import Dataset, DataLoader
 
+# TODO Why are we forcing things to run on a single thread?
 torch.set_num_threads(1)
 
 
@@ -55,6 +56,8 @@ class VocosDataset(Dataset):
         if y.size(0) > 1:
             # mix to mono
             y = y.mean(dim=0, keepdim=True)
+        
+        # TODO Oh the magic numbers. A travesty.
         gain = np.random.uniform(-1, -6) if self.train else -3
         y, _ = torchaudio.sox_effects.apply_effects_tensor(y, sr, [["norm", f"{gain:.2f}"]])
         if sr != self.sampling_rate:
