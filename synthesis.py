@@ -140,7 +140,7 @@ def synthesis():
             output = inference.synthesise(
                 inference.process_text(text, device), 
                 model, 
-                spks=spks, 
+                speaker_index=spks, 
                 lang=lang,
                 temperature=temperature,
                 length_scale=length_scale,
@@ -159,7 +159,7 @@ def synthesis():
             output = inference.synthesise(
                 inference.process_text(text, device), 
                 model, 
-                spks=spks, 
+                speaker_index=spks, 
                 lang=lang,
                 temperature=temperature,
                 length_scale=length_scale,

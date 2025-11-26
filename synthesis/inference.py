@@ -28,7 +28,7 @@ def synthesise(
     n_timesteps: int = 10, 
     temperature: float = 0.667, 
     length_scale: float = 1.0, 
-    spks: torch.Tensor = None, 
+    speaker_index: torch.Tensor = None, 
     lang: torch.Tensor = None
 ):
     """
@@ -50,7 +50,7 @@ def synthesise(
         text['x_lengths'],
         n_timesteps=n_timesteps,
         temperature=temperature,
-        spks=spks,
+        spks=speaker_index,
         lang=lang,
         length_scale=length_scale
     )
@@ -117,7 +117,7 @@ def batch_synthesis(
         batch_output = synthesise(
             inputs, 
             model, 
-            spks=batch_spks, 
+            speaker_index=batch_spks, 
             lang=batch_lang,
             temperature=temperature,
             length_scale=length_scale,
