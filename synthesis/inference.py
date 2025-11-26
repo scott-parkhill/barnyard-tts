@@ -29,7 +29,7 @@ def synthesise(
     temperature: float = 0.667, 
     length_scale: float = 1.0, 
     speaker_index: torch.Tensor = None, 
-    lang: torch.Tensor = None
+    language_index: torch.Tensor = None
 ):
     """
     Synthesize using MatchaTTS to produce mel-spectrogram and efficiency measures.
@@ -51,7 +51,7 @@ def synthesise(
         n_timesteps=n_timesteps,
         temperature=temperature,
         spks=speaker_index,
-        lang=lang,
+        lang=language_index,
         length_scale=length_scale
     )
     # merge everything to one dict    
@@ -118,7 +118,7 @@ def batch_synthesis(
             inputs, 
             model, 
             speaker_index=batch_spks, 
-            lang=batch_lang,
+            language_index=batch_lang,
             temperature=temperature,
             length_scale=length_scale,
             n_timesteps=n_timesteps

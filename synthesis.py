@@ -141,7 +141,7 @@ def synthesis():
                 inference.process_text(text, device), 
                 model, 
                 speaker_index=spks, 
-                lang=lang,
+                language_index=lang,
                 temperature=temperature,
                 length_scale=length_scale,
                 n_timesteps=n_timesteps
@@ -160,7 +160,7 @@ def synthesis():
                 inference.process_text(text, device), 
                 model, 
                 speaker_index=spks, 
-                lang=lang,
+                language_index=lang,
                 temperature=temperature,
                 length_scale=length_scale,
                 n_timesteps=n_timesteps
