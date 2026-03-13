@@ -7,7 +7,7 @@ import torch.nn.functional as F
 
 from einops import rearrange, repeat
 
-from mamba_ssm.ops.triton.ssd_combined import mamba_chunk_scan_combined
+# from mamba_ssm.ops.triton.ssd_combined import mamba_chunk_scan_combined
 
 
 class Quasiseparable(nn.Module):

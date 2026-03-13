@@ -35,13 +35,21 @@ torchaudio
 matplotlib
 pandas
 conformer==0.3.2
-diffusers==0.25.0
+# diffusers==0.25.0
+diffusers[torch]
 notebook
 ipywidgets
 gradio==3.43.2
 gdown
 wget
 seaborn
-mamba_ssm
-flash_attn
+fnet-pytorch
+encodec
+# mamba_ssm
+# flash_attn
 # piper_phonemize
+
+# API
+fastapi
+uvicorn
+gunicorn
